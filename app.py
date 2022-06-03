@@ -20,7 +20,8 @@ if 'AM_I_IN_A_DOCKER_CONTAINER' not in os.environ:
     
 #Reading necessary info from environment or config
 user_name = os.environ['USER_NAME']
-password = config['CREDS']['USER_PASSWORD']
+password = os.environ['USER_PASSWORD']
+sample_file = config['GENERAL']['SAMPLE_FILE']
 
 
 #Initializing FASTAPI APP
@@ -54,7 +55,7 @@ async def secured_function(access: bool = Depends(has_access)):
 
 @app.get("/sendfile/")
 async def send_file():
-    return responses.FileResponse("files/sample_image.jpg")
+    return responses.FileResponse(sample_file)
 
 @app.post("/postfile/")
 async def post_file(file_to_process: UploadFile = File(...), access: bool = Depends(has_access)):
