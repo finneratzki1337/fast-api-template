@@ -13,7 +13,7 @@ from module_template import module_class
 
 #reading potential config
 config = ConfigParser()
-config.read("config/creds.conf")
+config.read("config/conf.conf")
 
 if 'AM_I_IN_A_DOCKER_CONTAINER' not in os.environ:
     load_dotenv()
