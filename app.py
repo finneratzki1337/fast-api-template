@@ -1,0 +1,58 @@
+from configparser import ConfigParser
+import os
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.security import HTTPBasicCredentials, HTTPBasic
+import secrets
+
+#importing own modules
+from module_template import module_class
+
+#MY_ENV_VAR = os.getenv('MY_ENV_VAR')
+
+#reading potential config
+config = ConfigParser()
+config.read("config/creds.conf")
+
+if 'AM_I_IN_A_DOCKER_CONTAINER' not in os.environ:
+    load_dotenv()
+    
+#Reading necessary info from environment or config
+user_name = os.environ['USER_NAME']
+password = config['CREDS']['USER_PASSWORD']
+
+
+#Initializing FASTAPI APP
+app = FastAPI()
+security = HTTPBasic()
+
+def has_access(credentials: HTTPBasicCredentials = Depends(security)):
+    """
+        Function that is used to validate the username in the case that it requires it
+    """
+    correct_username = secrets.compare_digest(credentials.username, user_name)
+    correct_password = secrets.compare_digest(credentials.password, password)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    return True
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World!"}
+
+@app.get("/secured/")
+async def secured_function(creds: str = Depends(has_access)):
+    new_object = module_class.sample_class()
+    result = new_object.sample_method()
+    return {"Access" : result}
+
+if __name__ == "__main__":
+    uvicorn.run(
+    "app:app", 
+    host="0.0.0.0", port=int(os.environ['UVICORN_PORT']), log_level="debug", reload="true")
