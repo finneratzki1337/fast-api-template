@@ -15,8 +15,10 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 RUN useradd -ms /bin/bash exec-user
 #Switching user for security reasons
-USER exec-user
+
 ADD . /code
+RUN chown exec-user files
+USER exec-user
 
 CMD ["python3", "app.py"]
 #CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

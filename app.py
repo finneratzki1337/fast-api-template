@@ -2,7 +2,7 @@ from configparser import ConfigParser
 import os
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, responses, File, UploadFile
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 import secrets
 
@@ -47,10 +47,23 @@ async def root():
     return {"message": "Hello World!"}
 
 @app.get("/secured/")
-async def secured_function(creds: str = Depends(has_access)):
+async def secured_function(access: bool = Depends(has_access)):
     new_object = module_class.sample_class()
     result = new_object.sample_method()
     return {"Access" : result}
+
+@app.get("/sendfile/")
+async def send_file():
+    return responses.FileResponse("files/sample_image.jpg")
+
+@app.post("/postfile/")
+async def post_file(file_to_process: UploadFile = File(...), access: bool = Depends(has_access)):
+    file_location = f"files/{file_to_process.filename}"
+    print(file_location)
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file_to_process.file.read())
+
+    return {"Status" : "File received"}
 
 if __name__ == "__main__":
     uvicorn.run(
