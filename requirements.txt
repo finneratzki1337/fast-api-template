@@ -2,3 +2,6 @@ fastapi
 python-dotenv
 uvicorn
 python-multipart
+mediapipe
+opencv-python
+protobuf==3.20.1
