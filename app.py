@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Depends, status, responses, File, UploadFile
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 import secrets
-import swing_analyzer_package
-from swing_analyzer_package import swing_analyzer
 
 #importing own modules
 from module_template import module_class
@@ -66,9 +64,7 @@ async def post_file(file_to_process: UploadFile = File(...), access: bool = Depe
     with open(file_location, "wb+") as file_object:
         file_object.write(file_to_process.file.read())
 
-    swing_analyzer.analyze_video(file_location)
-    print(config['GENERAL']['OUTPUT_FILE'])
-    return responses.FileResponse(config['GENERAL']['OUTPUT_FILE'])
+    return {"message" : 'file_sent'}
 
 if __name__ == "__main__":
     uvicorn.run(

@@ -5,7 +5,6 @@ ENV AM_I_IN_A_DOCKER_CONTAINER Yes
 RUN apt-get update
 RUN apt-get install -y wget
 RUN apt-get install -y python3 && apt-get install -y python3-pip
-RUN apt-get install build-essential cmake libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev -y
 WORKDIR /code
 
 #Or specifically adding requirements txt only
