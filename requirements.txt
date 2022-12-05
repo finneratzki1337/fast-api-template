@@ -2,6 +2,9 @@ fastapi
 python-dotenv
 uvicorn
 python-multipart
-mediapipe
-opencv-python
 protobuf==3.20.1
+flake8
+black
+flake8-docstrings
+pep8-naming
+isort
