@@ -4,7 +4,7 @@ on: [push]
 
 env:
   USER_NAME: testuser
-  PASSWORD_PASSWORD: testpassword
+  USER_PASSWORD: testpassword
 
 jobs:
   build:
