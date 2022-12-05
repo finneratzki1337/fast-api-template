@@ -1,11 +1,11 @@
+"""Template for FastAPI deployment with some sample methods to be used."""
 import os
 import secrets
 from configparser import ConfigParser
 
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import (Depends, FastAPI, File, HTTPException, UploadFile,
-                     responses, status)
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, responses, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 # importing own modules
@@ -32,8 +32,11 @@ security = HTTPBasic()
 
 
 def has_access(credentials: HTTPBasicCredentials = Depends(security)):
-    """
-    Function that is used to validate the username in the case that it requires it
+    """Function to validate credentials.
+
+    Can be used by function call on specific routes to check
+    whether credentials have been provided during API call.
+    Credentials can be defined in .env file.
     """
     correct_username = secrets.compare_digest(credentials.username, user_name)
     correct_password = secrets.compare_digest(credentials.password, password)
@@ -49,18 +52,29 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security)):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World!"}
+    """Function on main route."""
+    return {"msg": "Hello World!"}
 
 
 @app.get("/secured/")
 async def secured_function(access: bool = Depends(has_access)):
-    new_object = module_class.sample_class()
-    result = new_object.sample_method()
+    """Sample for function that is protected by credentials.add()
+
+    During function call has_access function is called which refers to credentials.
+    This method also demonstrated how to access the any underlying modules.
+    """
+    new_object = module_class.SampleClass()
+    result = new_object.sample_method_one()
     return {"Access": result}
 
 
 @app.get("/sendfile/")
 async def send_file():
+    """Sends a file to the user.
+
+    Returns:
+        fastapi.responses.FileResponse: specified file from config or defined here
+    """
     return responses.FileResponse(sample_file)
 
 
@@ -68,12 +82,20 @@ async def send_file():
 async def post_file(
     file_to_process: UploadFile = File(...), access: bool = Depends(has_access)
 ):
+    """Function to post file secured by credentials.
+
+    Args:
+        file_to_process (UploadFile, optional): _description_. Defaults to File(...).
+        access (bool, optional): _description_. Defaults to Depends(has_access).
+
+    Returns:
+        json: returns confirmation that file has been received.
+    """
     file_location = f"files/{file_to_process.filename}"
-    print(file_location)
     with open(file_location, "wb+") as file_object:
         file_object.write(file_to_process.file.read())
 
-    return {"message": "file_sent"}
+    return {"msg": "file received"}
 
 
 if __name__ == "__main__":

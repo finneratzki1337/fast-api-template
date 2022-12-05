@@ -1,1 +1,1 @@
-sample content of file
+sample_content2
