@@ -2,6 +2,10 @@ name: Pytest
 
 on: [push]
 
+env:
+  USER_NAME: testuser
+  PASSWORD_PASSWORD: testpassword
+
 jobs:
   build:
 

@@ -7,16 +7,14 @@ from fastapi.testclient import TestClient
 
 from app import app
 
-if os.path.exists(".env"):
-    if "AM_I_IN_A_DOCKER_CONTAINER" not in os.environ:
-        load_dotenv()
 
-    # Reading necessary info from environment or config
-    user_name = os.environ["USER_NAME"]
-    password = os.environ["USER_PASSWORD"]
-else:
-    user_name = "testuser"
-    password = "testpassword"
+if "AM_I_IN_A_DOCKER_CONTAINER" not in os.environ:
+    load_dotenv()
+
+# Reading necessary info from environment or config
+user_name = os.environ["USER_NAME"]
+password = os.environ["USER_PASSWORD"]
+
 
 config = ConfigParser()
 config.read("config/conf.conf")
