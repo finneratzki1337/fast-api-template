@@ -17,12 +17,17 @@ from module_template import module_class
 config = ConfigParser()
 config.read("config/conf.conf")
 
-if "AM_I_IN_A_DOCKER_CONTAINER" not in os.environ:
-    load_dotenv()
+if os.path.exists(".env"):
+    if "AM_I_IN_A_DOCKER_CONTAINER" not in os.environ:
+        load_dotenv()
 
-# Reading necessary info from environment or config
-user_name = os.environ["USER_NAME"]
-password = os.environ["USER_PASSWORD"]
+    # Reading necessary info from environment or config
+    user_name = os.environ["USER_NAME"]
+    password = os.environ["USER_PASSWORD"]
+else:
+    user_name = "testuser"
+    password = "testpassword"
+
 sample_file = config["GENERAL"]["SAMPLE_FILE"]
 
 
