@@ -1,10 +1,12 @@
-from configparser import ConfigParser
 import os
+import secrets
+from configparser import ConfigParser
+
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Depends, status, responses, File, UploadFile
-from fastapi.security import HTTPBasicCredentials, HTTPBasic
-import secrets
+from fastapi import (Depends, FastAPI, File, HTTPException, UploadFile,
+                     responses, status)
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 # importing own modules
 from module_template import module_class
